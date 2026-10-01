@@ -1,1 +1,1 @@
-# python-optimization
+Moje upoznavanje sa praktičnom primenom optimizacije u Pythonu
