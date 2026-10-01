@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.optimize import linprog
 
+
+#REŠENJE/POSTAVKA PROBLEMA OPTIMIZACIJE ZA 3 SATA (AI)
 # 1. DEFINIŠEMO PROBLEM ZA 3 SATA (da bude pregledno, mada može za svih 24)
 # Promenljive x u našem vektoru:
 # [Struja_iz_mreže_sat1, Struja_iz_mreže_sat2, Struja_iz_mreže_sat3,

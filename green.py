@@ -1,8 +1,9 @@
 import numpy as np
 from scipy.optimize import linprog
 
-hours = 24
 
+#Proširenje inicijalnog problema na 24 sata (SAMOSTALNO)
+hours = 24
 
 price_grid = [
     5,
