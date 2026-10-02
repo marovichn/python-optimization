@@ -1,0 +1,43 @@
+from ortools.linear_solver import pywraplp
+
+solver = pywraplp.Solver.CreateSolver("GLOP")
+inf = solver.infinity()
+
+# promenljive sa granicama
+x1 = solver.NumVar(0, inf, "sto")
+x2 = solver.NumVar(10, inf, "stolica")
+x3 = solver.NumVar(0, 40, "polica")
+xs = [x1, x2, x3]
+
+# resursi: (ime, koeficijenti, raspoloživo)
+resursi = [
+    ("drvo",      [3, 1, 2], 240),
+    ("stolarija", [4, 2, 3], 360),
+    ("farbanje",  [2, 1, 2], 180),
+    ("pakovanje", [1, 1, 1], 100),
+]
+ogranicenja = []
+for ime, koef, b in resursi:
+    ct = solver.Constraint(-inf, b, ime)
+    for x, a in zip(xs, koef):
+        ct.SetCoefficient(x, a)
+    ogranicenja.append(ct)
+
+# cilj: maksimizacija profita
+cilj = solver.Objective()
+for x, p in zip(xs, [120, 70, 90]):
+    cilj.SetCoefficient(x, p)
+cilj.SetMaximization()
+
+status = solver.Solve()
+print("status OPTIMAL:", status == pywraplp.Solver.OPTIMAL)
+print(f"profit = {cilj.Value():.2f}")
+for x in xs:
+    print(f"{x.name():<10} = {x.solution_value():6.2f}   reduced cost = {x.reduced_cost():6.2f}")
+print()
+for ct, (ime, koef, b) in zip(ogranicenja, resursi):
+    koristi = sum(a * x.solution_value() for x, a in zip(xs, koef))
+    print(f"{ime:<10} dual = {ct.dual_value():6.2f}   slack = {b - koristi:6.2f}")
+
+dual_cilj = sum(b * ct.dual_value() for ct, (_, _, b) in zip(ogranicenja, resursi))
+print(f"\nb . y = {dual_cilj:.2f}")
